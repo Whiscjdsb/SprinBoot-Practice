@@ -12,9 +12,11 @@ import com.example.springbootpractice.mapper.UserMapper;
 import com.example.springbootpractice.vo.UserVO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,11 @@ public class UserService {
 
     public List<User> getUsers() {
         return userMapper.selectList(null);
+    }
+    public User findByUsername(String username) {
+        LambdaQueryWrapper<User> query = new LambdaQueryWrapper<>();
+        query.eq(User::getName, username);
+        return userMapper.selectOne(query);
     }
     public User addUser(User user) {
         userMapper.insert(user);
@@ -43,7 +50,9 @@ public class UserService {
         User user = new User();
         user.setName(request.getName());
         user.setAge(request.getAge());
-        user.setPassword(request.getPassword());
+
+        org.springframework.security.crypto.password.PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userMapper.insert(user);
 

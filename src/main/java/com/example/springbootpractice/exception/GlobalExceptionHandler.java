@@ -19,6 +19,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(Exception.class)
     public ApiResponse<Object> handleException(Exception e) {
+        e.printStackTrace();
         return ApiResponse.error(500, "服务器内部错误");
     }
     @ExceptionHandler(BindException.class)

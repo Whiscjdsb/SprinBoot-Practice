@@ -10,20 +10,10 @@ public class CreateUserRequest {
     private String name;
     @Min(value = 0, message = "年龄不能小于0")
     @Max(value = 120, message = "年龄不能大于120")
-    @NotBlank(message = "密码不能为空")
     private Integer age;
+    @NotBlank(message = "密码不能为空")
+
 
     private String password;
-    public String getName() {
-        return name;
-    }
-    public Integer getAge() {
-        return age;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setAge(Integer age) {
-        this.age = age;
-    }
+
 }
