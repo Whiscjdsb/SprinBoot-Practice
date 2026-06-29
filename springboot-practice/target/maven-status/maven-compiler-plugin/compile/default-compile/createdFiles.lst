@@ -1,0 +1,3 @@
+com\example\springbootpractice\aspect\PerformanceAspect.class
+com\example\springbootpractice\annotation\RequiresPermission.class
+com\example\springbootpractice\aspect\PermissionAspect.class
