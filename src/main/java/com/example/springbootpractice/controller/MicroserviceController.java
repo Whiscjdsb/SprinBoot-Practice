@@ -19,9 +19,11 @@ public class MicroserviceController {
     // 业务方法写在这里
     @GetMapping("/notification/ping")
     public ApiResponse<String> pingNotification() {
-        // 第一步：调用 notificationClient.ping()，保存到 result
-        String result = notificationClient.ping();
-        // 第二步：把 result 包装成成功响应并返回
-        return ApiResponse.success(result);
+        try {
+            String result = notificationClient.ping();
+            return ApiResponse.success(result);
+        } catch (Exception e) {
+            return ApiResponse.success("通知服务暂时不可用，请稍后再试");
+        }
     }
 }
