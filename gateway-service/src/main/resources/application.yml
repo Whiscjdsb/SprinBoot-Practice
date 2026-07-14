@@ -7,7 +7,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: ${NACOS_HOST:localhost}:8848
     gateway:
       routes:
         - id: user-service
