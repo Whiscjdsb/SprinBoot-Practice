@@ -1,6 +1,7 @@
 package com.example.springbootpractice.vo;
 
-public class UserVO {
+public class UserVO implements java.io.Serializable {
+
     private  Long id;
     private String name;
     private Integer age;

@@ -8,7 +8,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-public class JwtUtil {
+public class    JwtUtil {
 
     // 密钥（至少 32 个字符）
     private static final String SECRET = "ThisIsASecretKeyForJwtAtLeast32BytesLong!!";
@@ -20,10 +20,11 @@ public class JwtUtil {
     /**
      * 生成 token
      */
-    public static String generateToken(String username) {
+    public static String generateToken(String username, String role) {
         long now = System.currentTimeMillis();
         return Jwts.builder()
                 .subject(username)
+                .claim("role", role)
                 .issuedAt(new Date(now))
                 .expiration(new Date(now + EXPIRE_MS))
                 .signWith(KEY)
@@ -56,4 +57,9 @@ public class JwtUtil {
                 .parseSignedClaims(token)
                 .getPayload();
     }
+
+    public static String getRoleFromToken(String token) {
+        return parseClaims(token).get("role", String.class);
+    }
+
 }

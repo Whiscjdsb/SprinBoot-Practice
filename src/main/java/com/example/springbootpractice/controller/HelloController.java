@@ -37,7 +37,7 @@ public class HelloController {
 
     @GetMapping("/profile")
     public User getProfile(@RequestParam String name, @RequestParam int age) {
-        return new User(100L, name, age);
+        return new User(100L, name, age,"123456");
     }
 
 

@@ -14,10 +14,14 @@ public class User {
     private String name;
     private Integer age;
     private String password;
+    private String avatar;
+    private String role;
+    private String email;
+
     public User() {
     }
 
-    public User(Long id, String name, Integer age) {
+    public User(Long id, String name, Integer age, String password) {
         this.id = id;
         this.name = name;
         this.age = age;

@@ -3,6 +3,7 @@ package com.example.springbootpractice.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.springbootpractice.common.PageResult;
+import com.example.springbootpractice.dto.ChangePasswordRequest;
 import com.example.springbootpractice.dto.CreateUserRequest;
 import com.example.springbootpractice.dto.UpdateUserRequest;
 import com.example.springbootpractice.dto.UserQueryRequest;
@@ -12,7 +13,9 @@ import com.example.springbootpractice.mapper.UserMapper;
 import com.example.springbootpractice.vo.UserVO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private UserMapper userMapper;
 
@@ -37,7 +42,7 @@ public class UserService {
         userMapper.insert(user);
         return user;
     }
-
+    @Cacheable(value = "user", key = "#id")
     public UserVO getUserById(Long id) {
         User user = userMapper.selectById(id);
         if (user == null) {
@@ -50,6 +55,7 @@ public class UserService {
         User user = new User();
         user.setName(request.getName());
         user.setAge(request.getAge());
+        user.setEmail(request.getEmail());
 
         org.springframework.security.crypto.password.PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -121,6 +127,23 @@ public class UserService {
                 result.getSize(),
                 result.getPages()
         );
+    }
+
+    public void updateAvatar(Long id, String avatarPath) {
+        User user = userMapper.selectById(id);
+        user.setAvatar(avatarPath);
+        userMapper.updateById(user);
+    }
+    public void changePassword(Long id, @Valid ChangePasswordRequest request) {
+        User user = userMapper.selectById(id);
+        if (user == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new BusinessException(400, "旧密码错误");
+        }
+            user.setPassword(request.getNewPassword());
+        userMapper.updateById(user);
     }
 
 }

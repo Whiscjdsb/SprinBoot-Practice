@@ -12,8 +12,9 @@ public class CreateUserRequest {
     @Max(value = 120, message = "年龄不能大于120")
     private Integer age;
     @NotBlank(message = "密码不能为空")
-
-
     private String password;
+    @NotBlank(message = "邮箱不能为空")
+    private String email;
+
 
 }

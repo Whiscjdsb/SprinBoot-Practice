@@ -5,6 +5,7 @@ import com.example.springbootpractice.dto.CreateUserRequest;
 import com.example.springbootpractice.dto.LoginRequest;
 import com.example.springbootpractice.entity.User;
 import com.example.springbootpractice.security.JwtUtil;
+import com.example.springbootpractice.service.EmailService;
 import com.example.springbootpractice.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,10 +19,12 @@ public class AuthController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
-    public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
+    public AuthController(UserService userService, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
@@ -32,13 +35,14 @@ public class AuthController {
         if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
             return ApiResponse.error(401, "Invalid username or password");
         }
-        String token = JwtUtil.generateToken(username);
+        String token = JwtUtil.generateToken(username, user.getRole());
         return ApiResponse.success(token);
     }
     @PostMapping("/register")
     public ApiResponse<String> register(@RequestBody CreateUserRequest request) {
         userService.addUser(request);
-        String token = JwtUtil.generateToken(request.getName());
+        String token = JwtUtil.generateToken(request.getName(), "user");
+        emailService.sendWelcomeEmail(request.getEmail(), request.getName());
         return ApiResponse.success(token);
     }
 

@@ -1,23 +1,9 @@
 package com.example.springbootpractice.config;
 
-import com.example.springbootpractice.interceptor.LogInterceptor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
-    private final LogInterceptor logInterceptor;
-
-    public WebConfig(LogInterceptor logInterceptor) {
-        this.logInterceptor = logInterceptor;
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(logInterceptor)
-                .addPathPatterns("/**")  // 拦截所有请求
-                .excludePathPatterns("/error"); // 排除错误路径
-    }
+    // LogInterceptor 已移除，日志功能由 LogAspect 统一处理
 }
